@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './AuthPage.css';
 
 
-const AuthPage = () => {
+const AuthPage = ({ setUser }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const AuthPage = () => {
 
     if (isSignup) {
       // Signup Logic
-      const newUser = { name, email, password };
+      const newUser = { name, email, password, subscriptions: [] };
       const response = await fetch('http://localhost:5000/users', {
         method: 'POST',
         headers: {
@@ -27,6 +27,9 @@ const AuthPage = () => {
 
       if (response.ok) {
         alert('Signup successful!');
+        localStorage.setItem('user', JSON.stringify(newUser));
+        setUser(newUser.name)
+        navigate('/home')
       }
     } else {
       // Signin Logic
@@ -35,6 +38,8 @@ const AuthPage = () => {
 
       if (users.length > 0 && users[0].password === password) {
         alert('Signin successful!');
+        localStorage.setItem('user', JSON.stringify(users[0]));
+        setUser(users[0].name)
         navigate('/home');
       } else {
         // Display alert message for wrong credentials
@@ -50,10 +55,10 @@ const AuthPage = () => {
 
   return (
     <div>
-      <h2>{isSignup ? 'Signup' : 'Signin'}</h2>
+      <h2>{isSignup ? 'Subscriptly' : 'Welcome'}</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className='input1'>Name:</label>
+          {/* <label className='input1'>Name:</label> */}
           <input
             type="text"
             placeholder='name'
@@ -64,7 +69,7 @@ const AuthPage = () => {
         </div>
         {isSignup && (
           <div>
-            <label className='input2'>Email:</label>
+            {/* <label className='input2'>Email:</label> */}
             <input
               type="email"
               placeholder='email'
@@ -75,7 +80,7 @@ const AuthPage = () => {
           </div>
         )}
         <div>
-          <label className='input3'>Password:</label>
+          {/* <label className='input3'>Password:</label> */}
           <input
             type="password"
             placeholder='password'
